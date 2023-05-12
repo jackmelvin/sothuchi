@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Sổ Thu Chi</string>
+    <string name="this_month">This month</string>
+    <string name="income">Income</string>
+    <string name="paid">Paid</string>
+    <string name="date">Date</string>
+    <string name="amount">Amount</string>
+    <string name="category">Category</string>
+    <string name="memo">Memo</string>
+    <string name="currency_yen">¥</string>
+    <string name="write_a_memo">Write a memo</string>
+    <string-array name="dayOfWeek">
+        <item>SUN</item>
+        <item>MON</item>
+        <item>TUE</item>
+        <item>WED</item>
+        <item>THU</item>
+        <item>FRI</item>
+        <item>SAT</item>
+    </string-array>
+</resources>
