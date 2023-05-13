@@ -1,5 +1,6 @@
 package com.jackmelvin.sothuchi.dialog
 
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -14,7 +15,7 @@ import com.jackmelvin.sothuchi.activity.InputActivity
 import com.jackmelvin.sothuchi.adapter.CategoryAdapter
 import com.jackmelvin.sothuchi.model.Category
 
-class CategoryDialogFragment : DialogFragment(), CategoryAdapter.OnItemClickListener {
+class CategoryDialogFragment(val onCategorySelectedListener: OnCategorySelectedListener) : DialogFragment(), CategoryAdapter.OnItemClickListener {
     val paidCategory = mutableListOf<Category>()
     val incomeCategory = mutableListOf<Category>()
     var paidCategoryAdapter: CategoryAdapter? = null
@@ -73,8 +74,13 @@ class CategoryDialogFragment : DialogFragment(), CategoryAdapter.OnItemClickList
 
     override fun onItemClick(position: Int) {
         when(selectedCategory) {
-            InputActivity.PAID_CATEGORY -> Toast.makeText(context, "You selected " + paidCategory[position].name, Toast.LENGTH_SHORT).show()
-            InputActivity.INCOME_CATEGORY -> Toast.makeText(context, "You selected " + incomeCategory[position].name, Toast.LENGTH_SHORT).show()
+            InputActivity.PAID_CATEGORY -> onCategorySelectedListener.chooseCategory(paidCategory[position])
+            InputActivity.INCOME_CATEGORY -> onCategorySelectedListener.chooseCategory(incomeCategory[position])
         }
+        dismiss()
+    }
+
+    interface OnCategorySelectedListener {
+        fun chooseCategory(category: Category)
     }
 }
