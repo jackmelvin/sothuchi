@@ -1,10 +1,8 @@
 package com.jackmelvin.sothuchi.adapter
 
-import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -17,18 +15,18 @@ class CategoryAdapter(private val onItemClickListener: OnItemClickListener, priv
         val tvCategoryName: TextView
 
         init {
-            ivCategory = view.findViewById(R.id.ivCategory)
+            ivCategory = view.findViewById(R.id.ivMoneyCategory)
             tvCategoryName = view.findViewById(R.id.tvCategoryName)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_category, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_item_category, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.ivCategory.setImageResource(categoryList[position].image)
+        holder.ivCategory.setImageResource(categoryList[position].imageId)
         holder.tvCategoryName.text = categoryList[position].name
         holder.itemView.setOnClickListener {
             onItemClickListener.onItemClick(position)

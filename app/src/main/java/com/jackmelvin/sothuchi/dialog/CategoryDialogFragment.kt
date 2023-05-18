@@ -1,30 +1,49 @@
 package com.jackmelvin.sothuchi.dialog
 
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jackmelvin.sothuchi.R
 import com.jackmelvin.sothuchi.activity.InputActivity
 import com.jackmelvin.sothuchi.adapter.CategoryAdapter
+import com.jackmelvin.sothuchi.database.AppDatabase
 import com.jackmelvin.sothuchi.model.Category
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CategoryDialogFragment(val onCategorySelectedListener: OnCategorySelectedListener) : DialogFragment(), CategoryAdapter.OnItemClickListener {
-    val paidCategory = mutableListOf<Category>()
-    val incomeCategory = mutableListOf<Category>()
-    var paidCategoryAdapter: CategoryAdapter? = null
-    var incomeCategoryAdapter: CategoryAdapter? = null
-    var selectedCategory: String? = null
+    val categoryList = mutableListOf<Category>()
+    var categoryAdapter: CategoryAdapter? = null
+    var isIncome: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        selectedCategory = arguments?.getString(InputActivity.SELECTED_CATEGORY)
+
+        initData()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun initData() {
+        categoryAdapter = CategoryAdapter(this, categoryList)
+
+        isIncome = arguments?.getBoolean(InputActivity.IS_INCOME)
+        val db = context?.let { AppDatabase.getInstance(it) }
+        val categoryDao = db?.categoryDao()
+        lifecycleScope.launch(Dispatchers.IO) {
+            categoryDao?.let {cd ->
+                isIncome?.let {ii ->
+                    categoryList.addAll(cd.findAllByType(ii))
+                    categoryAdapter?.notifyDataSetChanged()
+                }
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,39 +63,17 @@ class CategoryDialogFragment(val onCategorySelectedListener: OnCategorySelectedL
     }
 
     private fun initCategoryGrid(view: View) {
-        paidCategory.add(Category(R.drawable.cam,"Cam"))
-        paidCategory.add(Category(R.drawable.duahau,"Dưa hấu"))
-        paidCategory.add(Category(R.drawable.sauchung,"Sầu riêng"))
-        paidCategory.add(Category(R.drawable.cam,"Cam"))
-        paidCategory.add(Category(R.drawable.duahau,"Dưa hấu"))
-        paidCategory.add(Category(R.drawable.sauchung,"Sầu riêng"))
-        paidCategory.add(Category(R.drawable.cam,"Cam"))
-        paidCategory.add(Category(R.drawable.duahau,"Dưa hấu"))
-        paidCategory.add(Category(R.drawable.sauchung,"Sầu riêng"))
-
-        incomeCategory.add(Category(R.drawable.xoai,"Xoài"))
-        incomeCategory.add(Category(R.drawable.tao,"Táo"))
-        incomeCategory.add(Category(R.drawable.xoai,"Xoài"))
-        incomeCategory.add(Category(R.drawable.tao,"Táo"))
-        incomeCategory.add(Category(R.drawable.xoai,"Xoài"))
-        incomeCategory.add(Category(R.drawable.tao,"Táo"))
-
         val rvCategory = view.findViewById<RecyclerView>(R.id.rvCategory)
         // Create a new category adapter suitable with selected radio button
-        when(selectedCategory) {
-            InputActivity.PAID_CATEGORY -> rvCategory.adapter = paidCategoryAdapter ?: CategoryAdapter(this, paidCategory)
-            InputActivity.INCOME_CATEGORY -> rvCategory.adapter = incomeCategoryAdapter ?: CategoryAdapter(this, incomeCategory)
-        }
+        rvCategory.adapter = CategoryAdapter(this, categoryList)
+
         // Use a GridLayoutManager for grid
         val columns = 3
         rvCategory.layoutManager = GridLayoutManager(context, columns)
     }
 
     override fun onItemClick(position: Int) {
-        when(selectedCategory) {
-            InputActivity.PAID_CATEGORY -> onCategorySelectedListener.chooseCategory(paidCategory[position])
-            InputActivity.INCOME_CATEGORY -> onCategorySelectedListener.chooseCategory(incomeCategory[position])
-        }
+        onCategorySelectedListener.chooseCategory(categoryList[position])
         dismiss()
     }
 

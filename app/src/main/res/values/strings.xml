@@ -7,11 +7,24 @@
     <string name="amount">Amount</string>
     <string name="category">Category</string>
     <string name="memo">Memo</string>
-    <string name="currency_yen">¥</string>
     <string name="write_a_memo">Write a memo</string>
     <string name="complete">Complete</string>
     <string name="input">Input</string>
-    <string name="back">◀️</string>
+    <string name="back">Back️</string>
+    <string name="date_sample">#/#(###)</string>
+    <string name="category_image">Category image</string>
+    <string name="one_char_placeholder">#</string>
+    <string name="account_book">Account book</string>
+    <string name="date_placeholder">##/## (###)</string>
+    <string name="history">History</string>
+    <string name="btnOthers">Others</string>
+    <string name="enter">Enter</string>
+    <string name="time_range_placeholder">##/## ~ ##/##</string>
+    <string name="full_time_range_placeholder">##/##/#### ~ ##/##/####</string>
+    <string name="mom_placeholder">+#.##% MoM</string>
+    <string name="full_date_placeholder">##/##/####</string>
+    <string name="not_selected">Not selected</string>
+    <string name="zero">0</string>
     <string-array name="dayOfWeek">
         <item>SUN</item>
         <item>MON</item>

@@ -12,7 +12,10 @@
         android:theme="@style/Theme.SổThuChi"
         tools:targetApi="31">
         <activity
-            android:name=".activity.CategorySelectorActivity"
+            android:name=".activity.MoneyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.HistoryActivity"
             android:exported="false" />
         <activity
             android:name=".activity.InputActivity"

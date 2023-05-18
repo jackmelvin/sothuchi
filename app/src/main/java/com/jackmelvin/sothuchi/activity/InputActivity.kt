@@ -1,31 +1,29 @@
 package com.jackmelvin.sothuchi.activity
 
-import android.R
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.jackmelvin.sothuchi.database.AppDatabase
 import com.jackmelvin.sothuchi.databinding.ActivityInputBinding
 import com.jackmelvin.sothuchi.dialog.CategoryDialogFragment
 import com.jackmelvin.sothuchi.model.Category
-import com.jackmelvin.sothuchi.model.Transaction
+import com.jackmelvin.sothuchi.model.Money
+import com.jackmelvin.sothuchi.model.UserMonthBalance
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-private lateinit var binding: ActivityInputBinding
 class InputActivity : AppCompatActivity(), CategoryDialogFragment.OnCategorySelectedListener {
+    private lateinit var binding: ActivityInputBinding
     private var chosenCategory: Category? = null
-    private lateinit var chosenDate: Date
+    private lateinit var chosenDate: Calendar
 
     companion object {
-        val PAID_CATEGORY = "paidCategory"
-        val INCOME_CATEGORY = "incomeCategory"
-        val SELECTED_CATEGORY = "selectedCategory"
+        val IS_INCOME = "isIncome"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,44 +42,66 @@ class InputActivity : AppCompatActivity(), CategoryDialogFragment.OnCategorySele
     }
 
     private fun initDatePicker() {
-        val date = Calendar.getInstance()
+        val calendar = Calendar.getInstance()
         val sdf = SimpleDateFormat("yyyy/MM/dd", Locale.US)
-        var dateString = sdf.format(date.time)
+        var dateString = sdf.format(calendar.time)
         binding.tvDate.text = dateString
 
-        binding.tvDate.setOnClickListener { view  ->
+        binding.tvDate.setOnClickListener {
             DatePickerDialog(
                 this@InputActivity,
-                DatePickerDialog.OnDateSetListener { datePicker, year, month, dayOfMonth ->
-                    date.set(year, month, dayOfMonth)
-                    dateString = sdf.format(date.time)
+                { _, year, month, dayOfMonth ->
+                    calendar.set(year, month, dayOfMonth)
+                    dateString = sdf.format(calendar.time)
                     binding.tvDate.text = dateString
                 },
-                date.get(Calendar.YEAR),
-                date.get(Calendar.MONTH),
-                date.get(Calendar.DAY_OF_MONTH)
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
-        this.chosenDate = date.time
+        this.chosenDate = calendar
     }
 
     private fun initCompleteAction() {
         binding.tvComplete.setOnClickListener {
-            println("Got here")
-            if(binding.etAmount.text.toString().toInt() <= 0) {
+            if (binding.etAmount.text.isBlank() || binding.etAmount.text.toString().toInt() <= 0) {
                 AlertDialog.Builder(this@InputActivity)
                     .setTitle("Verify")
-                    .setMessage("Transaction amount must be greater than 0")
-                    .setNegativeButton(R.string.ok, null)
+                    .setMessage("Amount must be greater than 0")
+                    .setNegativeButton(android.R.string.ok, null)
+                    .show()
+            } else if(chosenCategory == null) {
+                AlertDialog.Builder(this@InputActivity)
+                    .setTitle("Verify")
+                    .setMessage("Category must be selected")
+                    .setNegativeButton(android.R.string.ok, null)
                     .show()
             } else {
-                val transaction = Transaction(
-                    chosenDate,
-                    binding.etAmount.text.toString().toInt(),
-                    chosenCategory,
-                    binding.etMemo.text.toString()
-                )
-                Toast.makeText(this@InputActivity, "Saved transaction" + transaction.toString(), Toast.LENGTH_SHORT).show()
+                chosenCategory?.let {
+                    val money = Money(
+                        chosenDate,
+                        binding.etAmount.text.toString().toInt(),
+                        it.id,
+                        MainActivity.USER_ID,
+                        binding.etMemo.text.toString()
+                    )
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val db = AppDatabase.getInstance(this@InputActivity)
+                        db.moneyDao().insert(money)
+                        // Update user's balance
+                        var userMonthBalance: UserMonthBalance? = db.userMonthBalanceDao().findByUserId(MainActivity.USER_ID, money.date.get(Calendar.YEAR), money.date.get(Calendar.MONTH) + 1)
+                        userMonthBalance = userMonthBalance ?: UserMonthBalance(MainActivity.USER_ID, money.date.get(Calendar.YEAR), money.date.get(Calendar.MONTH) + 1, 0, 0)
+                        if(it.isIncome) {
+                            userMonthBalance.incomeSummary += money.amount
+                        } else {
+                            userMonthBalance.paidSummary += money.amount
+                        }
+                        db.userMonthBalanceDao().insert(userMonthBalance)
+                    }
+                    startActivity(Intent(this@InputActivity, MainActivity::class.java))
+                    finish()
+                }
             }
         }
     }
@@ -89,7 +109,7 @@ class InputActivity : AppCompatActivity(), CategoryDialogFragment.OnCategorySele
     private fun initCategorySelector() {
         binding.tvCategory.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString(SELECTED_CATEGORY, if (binding.rbPaid.isChecked) PAID_CATEGORY else INCOME_CATEGORY)
+            bundle.putBoolean(IS_INCOME, binding.rbIncome.isChecked)
 
             val dialogFragment = CategoryDialogFragment(this)
             dialogFragment.arguments = bundle

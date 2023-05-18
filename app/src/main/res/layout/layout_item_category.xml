@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingVertical="5dp"
@@ -11,23 +10,23 @@
     android:background="@drawable/shape_category">
 
     <ImageView
-        android:id="@+id/ivCategory"
+        android:id="@+id/ivMoneyCategory"
         android:layout_width="45dp"
         android:layout_height="45dp"
+        android:contentDescription="@string/category_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tvCategoryName"
-        app:srcCompat="@drawable/cam" />
+        app:layout_constraintBottom_toTopOf="@id/tvCategoryName" />
 
     <TextView
         android:id="@+id/tvCategoryName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cam"
-        android:textSize="16dp"
+        android:text=""
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/ivCategory"
-        app:layout_constraintStart_toStartOf="@+id/ivCategory"
-        app:layout_constraintTop_toBottomOf="@+id/ivCategory" />
+        app:layout_constraintEnd_toEndOf="@+id/ivMoneyCategory"
+        app:layout_constraintStart_toStartOf="@+id/ivMoneyCategory"
+        app:layout_constraintTop_toBottomOf="@+id/ivMoneyCategory" />
 </androidx.constraintlayout.widget.ConstraintLayout>
