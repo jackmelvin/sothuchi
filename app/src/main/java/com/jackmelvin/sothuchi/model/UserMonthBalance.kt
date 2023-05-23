@@ -8,14 +8,13 @@ import androidx.room.ForeignKey
     ForeignKey(
         entity = User::class,
         parentColumns = ["id"],
-        childColumns = ["user_id"],
-        onDelete = ForeignKey.RESTRICT
+        childColumns = ["user_id"]
     )
 ])
 data class UserMonthBalance (
     @ColumnInfo(name = "user_id") val userId: Long,
     @ColumnInfo(name = "year") val year: Int,
     @ColumnInfo(name = "month") val month: Int,
-    @ColumnInfo(name = "income_summary") var incomeSummary: Int,
-    @ColumnInfo(name = "paid_summary") var paidSummary: Int,
+    @ColumnInfo(name = "income_summary") var incomeSummary: Long,
+    @ColumnInfo(name = "payment_summary") var paymentSummary: Long,
 )

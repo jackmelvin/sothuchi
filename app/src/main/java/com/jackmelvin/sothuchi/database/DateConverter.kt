@@ -1,18 +1,9 @@
-package com.jackmelvin.sothuchi.converter
+package com.jackmelvin.sothuchi.database
 
 import androidx.room.TypeConverter
 import java.util.*
 
 object DateConverter {
-//    @TypeConverter
-//    fun toDate(timestamp: Long?): Date? {
-//        return if (timestamp == null) null else Date(timestamp)
-//    }
-//
-//    @TypeConverter
-//    fun toTimestamp(date: Date?): Long? {
-//        return date?.time
-//    }
     @TypeConverter
     fun toCalendar(timestamp: Long?): Calendar? {
         val calendar = Calendar.getInstance()

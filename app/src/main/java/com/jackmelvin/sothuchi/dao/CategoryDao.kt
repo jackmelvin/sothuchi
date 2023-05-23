@@ -2,21 +2,22 @@ package com.jackmelvin.sothuchi.dao
 
 import androidx.room.*
 import com.jackmelvin.sothuchi.model.Category
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryDao {
-    @Query("SELECT * FROM category WHERE is_income = (:isIncome)")
-    suspend fun findAllByType(isIncome: Boolean): List<Category>
+    @Query("SELECT * FROM category WHERE is_income = TRUE ORDER BY id ASC")
+    fun getAllIncomeCategories(): Flow<List<Category>>
+
+    @Query("SELECT * FROM category WHERE is_income = FALSE ORDER BY id ASC")
+    fun getAllPaymentCategories(): Flow<List<Category>>
 
     @Query("SELECT * FROM category WHERE id = (:categoryId)")
-    suspend fun findById(categoryId: Long): Category?
+    fun findById(categoryId: Long): Category?
 
-    @Insert
-    suspend fun insert(category: Category)
-
-    @Insert
-    suspend fun insertAll(vararg category: Category)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(vararg category: Category)
 
     @Delete
-    suspend fun delete(category: Category)
+    fun delete(category: Category)
 }

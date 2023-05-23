@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name="com.jackmelvin.sothuchi.SoThuChiApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,16 +13,16 @@
         android:theme="@style/Theme.SổThuChi"
         tools:targetApi="31">
         <activity
-            android:name=".activity.MoneyActivity"
+            android:name=".ui.MoneyActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.HistoryActivity"
+            android:name=".ui.HistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.InputActivity"
+            android:name=".ui.InputActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

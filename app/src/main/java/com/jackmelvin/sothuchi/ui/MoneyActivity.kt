@@ -1,4 +1,4 @@
-package com.jackmelvin.sothuchi.activity
+package com.jackmelvin.sothuchi.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
