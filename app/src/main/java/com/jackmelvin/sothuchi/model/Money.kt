@@ -23,9 +23,10 @@ import java.util.*
 )
 data class Money(
     @ColumnInfo(name = "date") val date: Calendar,
-    @ColumnInfo(name = "amount") val amount: Int,
+    @ColumnInfo(name = "amount") val amount: Long,
     @ColumnInfo(name = "category_id") val categoryId: Long,
     @ColumnInfo(name = "user_id") val userId: Long,
-    @ColumnInfo(name = "memo") val memo: String,
-    @PrimaryKey(autoGenerate = true) val id: Long = 0L
-)
+    @ColumnInfo(name = "memo") val memo: String
+) {
+    @PrimaryKey(autoGenerate = true) var id: Long = 0
+}

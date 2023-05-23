@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingVertical="48dp"
     android:paddingHorizontal="16dp"
-    tools:context=".activity.MoneyActivity">
+    tools:context=".ui.MoneyActivity">
 
     <TextView
         android:id="@+id/tvBack"

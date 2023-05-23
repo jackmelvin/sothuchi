@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
 data class Category(
     @ColumnInfo(name = "image_id") val imageId:Int,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "is_income") val isIncome: Boolean,
-    @PrimaryKey(autoGenerate = true) val id: Long = 0L
-)
+    @ColumnInfo(name = "is_income") val isIncome: Boolean
+) {
+    @PrimaryKey(autoGenerate = true) var id: Long = 0
+}
